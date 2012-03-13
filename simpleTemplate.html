@@ -1,0 +1,26 @@
+﻿<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Test Simple Template</title>
+	  <meta name="charset" content="UTF-8" />
+  </head>
+	<body>
+  	<div id="template-area">
+    </div>
+	</body>
+  <script type="text/javascript" src="scripts/jquery-1.5.1.js"></script>
+  <script type="text/javascript" src="scripts/jquery-extensions.js"></script>
+  <script type="text/javascript" src="scripts/simpleTemplate.js"></script>
+  <script type="text/javascript">
+    var model = {
+      Name: "Name",
+      Stuff: "Some encoded data & stuff ~ ! # $ * ? ",
+      Collection: [
+        { Id: 1, Stuff: "stuff 1" },
+        { Id: 2, Stuff: "stuff 2" }
+      ]
+    };
+
+    simpleTemplate.renderJson("templates/template.html", model, "#template-area");
+  </script>
+</html>
