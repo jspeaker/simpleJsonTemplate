@@ -1,0 +1,13 @@
+﻿<div>
+  <h1>${Stuff}</h1>
+  <h3>${Name}</h3>
+  <fieldset>
+    <legend>${Name}</legend>
+    <ul data-if="Collection.length > 0">
+      <li data-foreach="item" data-in="Collection" id="${Name}_${item.Id}">${Name} ${item.Id} ${item.Stuff}</li>
+    </ul>
+	<p data-if="Collection.length === 0">
+		No items exist in the collection...
+	</p>
+  </fieldset>
+</div>

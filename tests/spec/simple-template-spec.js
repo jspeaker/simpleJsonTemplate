@@ -47,14 +47,18 @@
     expect($(target.find("li")[0]).attr("id")).toEqual("Name_1");
     expect($(target.find("li")[1]).attr("id")).toEqual("Name_2");
   });
+	
+  it("should not render the paragraph element", function () {
+    expect(target.find("p").length).toEqual(0);
+  });
 
   it("should should have added the template to the cache", function () {
     expect(templateCache.count()).toEqual(1);
   });
 
-  describe("and the if condition is not satisfied", function () {
+  describe("and the if no collection elements condition is not satisfied", function () {
     beforeEach(function () {
-      model.Name = "Joe";
+      model.Collection = [];
       simpleTemplate.renderJson(templateUrl, model, target);
     });
 
@@ -69,5 +73,9 @@
     it("should use the cached template on subsequent calls", function () {
       expect(templateCache.count()).toEqual(1);
     });
+	
+	it("should render the paragraph element", function () {
+      expect(target.find("p").length).toEqual(1);
+	});
   });
 });

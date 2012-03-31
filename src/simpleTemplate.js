@@ -68,17 +68,17 @@ var templateController = (function () {
   };
 
   var renderCollections = function (dom, data) {
-    var collection = dom.find("*[foreach][in]");
+    var collection = dom.find("*[data-foreach][data-in]");
 
     for (var i = 0; i < collection.length; i++) {
       var element = $(collection[i]);
-      var collectionName = element.attr("in");
-      var itemName = element.attr("foreach");
+      var collectionName = element.data("in");
+      var itemName = element.data("foreach");
 
       var collectionData = data[collectionName];
       for (var j = 0; j < collectionData.length; j++) {
         var newElement = element.clone();
-        newElement.removeAttr("foreach").removeAttr("in");
+        newElement.removeAttr("data-foreach").removeAttr("data-in");
         newElement = renderProperties(propertyTypes.encoded, newElement, collectionData[j], itemName + ".");
         element.parent().append(newElement);
       }
@@ -88,13 +88,13 @@ var templateController = (function () {
   };
 
   var handleConditions = function (dom, data) {
-    var conditions = dom.find("*[if]");
+    var conditions = dom.find("*[data-if]");
     for (var i = 0; i < conditions.length; i++) {
-      var condition = $(conditions[i]).attr("if");
+      var condition = $(conditions[i]).data("if");
       if (!eval("data." + condition)) {
         $(conditions[i]).remove();
       }
-      $(conditions[i]).removeAttr("if");
+      $(conditions[i]).removeAttr("data-if");
     }
     return dom;
   };
@@ -102,7 +102,7 @@ var templateController = (function () {
   var renderTemplate = function (template, data) {
     // prevent template from firing potential 404s by attempting to load resources when initially added to dom
     template = template.replace(" src=", " src_temp_disabled=");
-    
+
     var dom = $(template);
     dom = handleConditions(dom, data);
     dom = renderEncodedProperties(dom, data);
@@ -156,4 +156,3 @@ var templateCache = (function () {
     }
   };
 })();
-
