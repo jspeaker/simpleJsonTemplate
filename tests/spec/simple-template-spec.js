@@ -35,19 +35,21 @@
   });
 
   it("should render the collection as li tags", function () {
-    expect(target.find("li").length).toEqual(2);
+    expect(target.find("li").length).toEqual(4);
   });
 
   it("should render the li tags with correct content", function () {
     expect($(target.find("li")[0]).html()).toEqual("Name 1 stuff 1");
     expect($(target.find("li")[1]).html()).toEqual("Name 2 stuff 2");
+    expect($(target.find("li")[2]).html()).toEqual("Name 1 stuff 1");
+    expect($(target.find("li")[3]).html()).toEqual("Name 2 stuff 2");
   });
 
   it("should render the li tags with correct ids", function () {
     expect($(target.find("li")[0]).attr("id")).toEqual("Name_1");
     expect($(target.find("li")[1]).attr("id")).toEqual("Name_2");
   });
-	
+
   it("should not render the paragraph element", function () {
     expect(target.find("p").length).toEqual(0);
   });
@@ -73,9 +75,33 @@
     it("should use the cached template on subsequent calls", function () {
       expect(templateCache.count()).toEqual(1);
     });
-	
-	it("should render the paragraph element", function () {
-      expect(target.find("p").length).toEqual(1);
-	});
+
+    it("should render the paragraph element", function () {
+      expect(target.find("p").length).toEqual(2);
+    });
   });
+
+  describe("and the if name does not equal empty string condition is not satisfied", function () {
+    beforeEach(function () {
+      model.Name = "";
+      simpleTemplate.renderJson(templateUrl, model, target);
+    });
+
+    it("should not render the second ul tag", function () {
+      expect(target.find("ul").length).toEqual(1);
+    });
+
+    it("should not render the second set of li tags", function () {
+      expect(target.find("li").length).toEqual(2);
+    });
+
+    it("should use the cached template on subsequent calls", function () {
+      expect(templateCache.count()).toEqual(1);
+    });
+
+    it("should not render the first paragraph element", function () {
+      expect(target.find("p").length).toEqual(1);
+    });
+  });
+
 });

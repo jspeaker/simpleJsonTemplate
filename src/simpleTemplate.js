@@ -91,12 +91,20 @@ var templateController = (function () {
     var conditions = dom.find("*[data-if]");
     for (var i = 0; i < conditions.length; i++) {
       var condition = $(conditions[i]).data("if");
-      if (!eval("data." + condition)) {
+      if (!evalInContext(condition, data)) {
         $(conditions[i]).remove();
       }
       $(conditions[i]).removeAttr("data-if");
     }
     return dom;
+  };
+  
+  var evalInContext = function (code, context) {
+    for (var varName in context) {
+      var setContextVar = "var " + varName + " = context." + varName + ";\r\n";
+      eval(setContextVar);
+    }
+    return eval(code);
   };
 
   var renderTemplate = function (template, data) {
@@ -115,6 +123,18 @@ var templateController = (function () {
   return {
     renderTemplate: function (template, data) {
       return renderTemplate(template, data);
+    }
+  };
+})();
+
+var conditionManager = (function () {
+  var parse = function (condition) {
+    return condition.replace(/\#/g, "data.");
+  };
+
+  return {
+    parse: function (condition) {
+      return parse(condition);
     }
   };
 })();
