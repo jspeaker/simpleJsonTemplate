@@ -45,7 +45,9 @@
     <Content Include="tests\simpleTemplate.html" />
     <Content Include="tests\spec-runner-include.js" />
     <Content Include="tests\SpecRunner.html" />
+    <Content Include="tests\spec\simple-template-spec-nonCompliant.js" />
     <Content Include="tests\spec\simple-template-spec.js" />
+    <Content Include="tests\templates\template-nonCompliant.html" />
     <Content Include="tests\templates\template.html" />
   </ItemGroup>
   <ItemGroup>

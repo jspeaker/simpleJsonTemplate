@@ -1,6 +1,6 @@
-﻿describe("when using simple template js : simpleTemplate.js", function () {
+﻿describe("when using simple template js with non html-5 compliant attributes : simpleTemplate.js", function () {
   var model;
-  var templateUrl = "./templates/template.html";
+  var templateUrl = "./templates/template-nonCompliant.html";
   var target = $("<div />");
 
   beforeEach(function () {
@@ -12,7 +12,7 @@
         { Id: 2, Stuff: "stuff 2" }
       ]
     };
-    
+
     templateCache.clear();
 
     spyOn(templateCache, "add").andCallThrough();

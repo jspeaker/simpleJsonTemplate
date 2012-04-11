@@ -1,0 +1,23 @@
+﻿<div>
+  <h1>${Stuff}</h1>
+  <h3>${Name}</h3>
+  <fieldset>
+    <legend>Collection with single if condition.</legend>
+    <ul if="Collection.length > 0">
+      <li if="Collection.length > 0" foreach="item" in="Collection" id="${Name}_${item.Id}">${Name} ${item.Id} ${item.Stuff}</li>
+    </ul>
+	<p if="Collection.length === 0">
+		No items exist in the collection...
+	</p>
+  </fieldset>
+
+  <fieldset>
+    <legend>Collection with compound if condition.</legend>
+    <ul if="Collection.length > 0 && Name != ''">
+      <li if="Collection.length > 0" foreach="item" in="Collection" id="Li1">${Name} ${item.Id} ${item.Stuff}</li>
+    </ul>
+	  <p if="Collection.length === 0 || Name == ''">
+		  No items exist in the collection...
+	  </p>
+  </fieldset>
+</div>

@@ -68,17 +68,23 @@ var templateController = (function () {
   };
 
   var renderCollections = function (dom, data) {
-    var collection = dom.find("*[data-foreach][data-in]");
+    var collection = dom.find("*[data-foreach][data-in],*[foreach][in]");
 
     for (var i = 0; i < collection.length; i++) {
       var element = $(collection[i]);
+
       var collectionName = element.data("in");
+      if (collectionName === undefined)
+        collectionName = element.attr("in");
+
       var itemName = element.data("foreach");
+      if (itemName === undefined)
+        itemName = element.attr("foreach");
 
       var collectionData = data[collectionName];
       for (var j = 0; j < collectionData.length; j++) {
         var newElement = element.clone();
-        newElement.removeAttr("data-foreach").removeAttr("data-in");
+        newElement.removeAttr("data-foreach").removeAttr("data-in").removeAttr("foreach").removeAttr("in");
         newElement = renderProperties(propertyTypes.encoded, newElement, collectionData[j], itemName + ".");
         element.parent().append(newElement);
       }
@@ -88,17 +94,20 @@ var templateController = (function () {
   };
 
   var handleConditions = function (dom, data) {
-    var conditions = dom.find("*[data-if]");
+    var conditions = dom.find("*[data-if],*[if]");
     for (var i = 0; i < conditions.length; i++) {
       var condition = $(conditions[i]).data("if");
+      if (condition === undefined)
+        condition = $(conditions[i]).attr("if");
+
       if (!evalInContext(condition, data)) {
         $(conditions[i]).remove();
       }
-      $(conditions[i]).removeAttr("data-if");
+      $(conditions[i]).removeAttr("data-if").removeAttr("if");
     }
     return dom;
   };
-  
+
   var evalInContext = function (code, context) {
     for (var varName in context) {
       var setContextVar = "var " + varName + " = context." + varName + ";\r\n";
@@ -142,6 +151,10 @@ var conditionManager = (function () {
 var templateCache = (function () {
   var cache = [];
 
+  var clear = function () {
+    cache = [];
+  };
+
   var add = function (key, value) {
     cache.push({ key: key, value: value });
   };
@@ -173,6 +186,9 @@ var templateCache = (function () {
     },
     count: function () {
       return cache.length;
+    },
+    clear: function () {
+      clear();
     }
   };
 })();
