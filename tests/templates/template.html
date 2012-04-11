@@ -4,7 +4,7 @@
   <fieldset>
     <legend>Collection with single if condition.</legend>
     <ul data-if="Collection.length > 0">
-      <li data-foreach="item" data-in="Collection" id="${Name}_${item.Id}">${Name} ${item.Id} ${item.Stuff}</li>
+      <li data-if="Collection.length > 0" data-foreach="item" data-in="Collection" id="${Name}_${item.Id}">${Name} ${item.Id} ${item.Stuff}</li>
     </ul>
 	<p data-if="Collection.length === 0">
 		No items exist in the collection...
@@ -14,7 +14,7 @@
   <fieldset>
     <legend>Collection with compound if condition.</legend>
     <ul data-if="Collection.length > 0 && Name != ''">
-      <li data-foreach="item" data-in="Collection" id="Li1">${Name} ${item.Id} ${item.Stuff}</li>
+      <li data-if="Collection.length > 0" data-foreach="item" data-in="Collection" id="Li1">${Name} ${item.Id} ${item.Stuff}</li>
     </ul>
 	  <p data-if="Collection.length === 0 || Name == ''">
 		  No items exist in the collection...
