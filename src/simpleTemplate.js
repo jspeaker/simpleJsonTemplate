@@ -81,8 +81,14 @@ var templateController = (function () {
       if (itemName === undefined)
         itemName = element.attr("foreach");
 
+      var step = element.data("step");
+      if (step === undefined)
+        step = element.attr("step");
+      if (step === undefined)
+        step = 1;
+
       var collectionData = data[collectionName];
-      for (var j = 0; j < collectionData.length; j++) {
+      for (var j = 0; j < collectionData.length; j = j + step) {
         var newElement = element.clone();
         newElement.removeAttr("data-foreach").removeAttr("data-in").removeAttr("foreach").removeAttr("in");
         newElement = renderProperties(propertyTypes.encoded, newElement, collectionData[j], itemName + ".");

@@ -1,6 +1,7 @@
 ﻿describe("when using simple template js : simpleTemplate.js", function () {
   var model;
   var templateUrl = "./templates/template.html";
+  var templateStep5Url = "./templates/template-step-5.html";
   var target = $("<div />");
 
   beforeEach(function () {
@@ -9,10 +10,14 @@
       Stuff: "Some encoded data & stuff ~ ! # $ * ? ",
       Collection: [
         { Id: 1, Stuff: "stuff 1" },
-        { Id: 2, Stuff: "stuff 2" }
+        { Id: 2, Stuff: "stuff 2" },
+        { Id: 3, Stuff: "stuff 3" },
+        { Id: 4, Stuff: "stuff 4" },
+        { Id: 5, Stuff: "stuff 5" },
+        { Id: 6, Stuff: "stuff 6" }
       ]
     };
-    
+
     templateCache.clear();
 
     spyOn(templateCache, "add").andCallThrough();
@@ -37,14 +42,14 @@
   });
 
   it("should render the collection as li tags", function () {
-    expect(target.find("li").length).toEqual(4);
+    expect(target.find("li").length).toEqual(12);
   });
 
   it("should render the li tags with correct content", function () {
     expect($(target.find("li")[0]).html()).toEqual("Name 1 stuff 1");
     expect($(target.find("li")[1]).html()).toEqual("Name 2 stuff 2");
-    expect($(target.find("li")[2]).html()).toEqual("Name 1 stuff 1");
-    expect($(target.find("li")[3]).html()).toEqual("Name 2 stuff 2");
+    expect($(target.find("li")[6]).html()).toEqual("Name 1 stuff 1");
+    expect($(target.find("li")[7]).html()).toEqual("Name 2 stuff 2");
   });
 
   it("should render the li tags with correct ids", function () {
@@ -58,6 +63,32 @@
 
   it("should should have added the template to the cache", function () {
     expect(templateCache.count()).toEqual(1);
+  });
+
+  describe("and the iteration step is set to 5", function () {
+    beforeEach(function () {
+      simpleTemplate.renderJson(templateStep5Url, model, target);
+    });
+
+    it("should render 2 li tags", function () {
+      expect(target.find("li").length).toEqual(2);
+    });
+
+    describe("and there are less than five elements", function () {
+      beforeEach(function () {
+        model.Collection = [
+          { Id: 1, Stuff: "stuff 1" },
+          { Id: 2, Stuff: "stuff 2" },
+          { Id: 3, Stuff: "stuff 3" },
+          { Id: 4, Stuff: "stuff 4" }
+        ];
+        simpleTemplate.renderJson(templateStep5Url, model, target);
+      });
+
+      it("should render 1 li tag", function () {
+        expect(target.find("li").length).toEqual(1);
+      });
+    });
   });
 
   describe("and the if no collection elements condition is not satisfied", function () {
@@ -94,7 +125,7 @@
     });
 
     it("should not render the second set of li tags", function () {
-      expect(target.find("li").length).toEqual(2);
+      expect(target.find("li").length).toEqual(6);
     });
 
     it("should use the cached template on subsequent calls", function () {
