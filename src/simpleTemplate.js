@@ -1,5 +1,5 @@
 ﻿var simpleTemplate = (function () {
-  var renderJson = function (url, data, target) {
+  var renderJson = function (url, data, target, callback) {
     var template = templateCache.template(url);
     if (template != null) {
       $(target).html(templateController.renderTemplate(template, data));
@@ -15,11 +15,15 @@
       success: function (result) {
         templateCache.add(url, result);
         $(target).html(templateController.renderTemplate(result, data));
+        if (callback)
+          callback();
       },
       error: function (xhr) {
         if (xhr.statusMessage != "error") {
           templateCache.add(url, xhr.responseText);
           $(target).html(templateController.renderTemplate(xhr.responseText, data));
+          if (callback)
+            callback();
           return;
         }
         $(target).html("Template " + url + " could not be loaded.");
@@ -28,8 +32,8 @@
   };
 
   return {
-    renderJson: function (url, data, target) {
-      renderJson(url, data, target);
+    renderJson: function (url, data, target, callback) {
+      renderJson(url, data, target, callback);
     }
   };
 })();
