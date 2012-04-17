@@ -3,6 +3,8 @@
     var template = templateCache.template(url);
     if (template != null) {
       $(target).html(templateController.renderTemplate(template, data));
+      if (callback)
+        callback();
       return;
     }
 
@@ -92,7 +94,19 @@ var templateController = (function () {
         step = 1;
 
       var collectionData = data[collectionName];
-      for (var j = 0; j < collectionData.length; j = j + step) {
+
+      var pageSize = element.data("pagesize");
+      if (pageSize === undefined)
+        pageSize = element.attr("pagesize");
+      if (pageSize === undefined)
+        pageSize = collectionData.length;
+
+      var startIndex = (data.Page !== undefined && pageSize !== collectionData.length ? data.Page * pageSize : pageSize) - pageSize;
+      var lastIndex = pageSize < collectionData.length ? (pageSize * data.Page) - 1 : collectionData.length - 1;
+      if (lastIndex > collectionData.length - 1)
+        lastIndex = collectionData.length - 1;
+
+      for (var j = startIndex; j <= lastIndex; j = j + step) {
         var newElement = element.clone();
         newElement.removeAttr("data-foreach").removeAttr("data-in").removeAttr("foreach").removeAttr("in");
         newElement = renderProperties(propertyTypes.encoded, newElement, collectionData[j], itemName + ".");
@@ -128,14 +142,14 @@ var templateController = (function () {
 
   var renderTemplate = function (template, data) {
     // prevent template from firing potential 404s by attempting to load resources when initially added to dom
-    template = template.replace(" src=", " src_temp_disabled=");
+    template = template.replace(/ src\=/gi, " src_temp_disabled=");
 
     var dom = $(template);
     dom = handleConditions(dom, data);
     dom = renderEncodedProperties(dom, data);
     dom = renderCollections(dom, data);
 
-    dom = $(dom.outerHtml().replace(" src_temp_disabled=", " src="));
+    dom = $(dom.outerHtml().replace(/src_temp_disabled\=/gi, " src="));
     return dom.outerHtml();
   };
 

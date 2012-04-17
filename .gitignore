@@ -1,6 +1,7 @@
 *.suo
 *.swp
 *.csproj.user
+*.DotSettings.user
 bin
 obj
 *.pdb
