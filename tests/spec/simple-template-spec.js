@@ -48,8 +48,8 @@
   it("should render the li tags with correct content", function () {
     expect($(target.find("li")[0]).html()).toEqual("Name 1 stuff 1");
     expect($(target.find("li")[1]).html()).toEqual("Name 2 stuff 2");
-    expect($(target.find("li")[6]).html()).toEqual("Name 1 stuff 1");
-    expect($(target.find("li")[7]).html()).toEqual("Name 2 stuff 2");
+    expect($.trim($(target.find("li")[6]).html())).toEqual('<span id="Span1">Collection item property conditional element</span> Name 1 stuff 1');
+    expect($.trim($(target.find("li")[7]).html())).toEqual("Name 2 stuff 2");
   });
 
   it("should render the li tags with correct ids", function () {

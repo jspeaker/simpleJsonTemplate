@@ -52,7 +52,7 @@ var templateController = (function () {
   var renderProperties = function (propertyType, element, data, itemName) {
     var pattern = propertyType.pattern;
     var regEx = new RegExp(pattern, "g");
-    var theHtml = decodeURIComponent(element.outerHtml());
+    var theHtml = element.outerHtml();
     var properties = theHtml.match(regEx);
     if (properties == null) {
       element = $(theHtml);
@@ -65,7 +65,7 @@ var templateController = (function () {
       var value = data[propertyName];
       if (value != undefined) {
         var replaceRegex = new RegExp(properties[i].replace("$", "\\$").replace("{", "\\{").replace("}", "\\}"), "g");
-        theHtml = theHtml.replace(replaceRegex, value);
+        theHtml = theHtml.replace(replaceRegex, decodeURIComponent(value));
       }
     }
 
@@ -111,12 +111,35 @@ var templateController = (function () {
         lastIndex = collectionData.length - 1;
 
       for (var j = startIndex; j <= lastIndex; j = j + step) {
+        handleItemConditions(element, collectionData[j]);
         var newElement = element.clone();
         newElement.removeAttr("data-foreach").removeAttr("data-in").removeAttr("foreach").removeAttr("in");
         newElement = renderProperties(propertyTypes.encoded, newElement, collectionData[j], itemName + ".");
         element.parent().append(newElement);
       }
+      cleanupItemConditions(element.parent());
       element.remove();
+    }
+    return dom;
+  };
+
+  var cleanupItemConditions = function (dom) {
+    var conditions = dom.find("*[data-if-item],*[if-item]");
+    for (var i = 0; i < conditions.length; i++) {
+      $(conditions[i]).removeAttr("data-if-item").removeAttr("if-item");
+    }
+  };
+
+  var handleItemConditions = function (dom, data) {
+    var conditions = dom.find("*[data-if-item],*[if-item]");
+    for (var i = 0; i < conditions.length; i++) {
+      var condition = $(conditions[i]).data("if-item");
+      if (condition === undefined)
+        condition = $(conditions[i]).attr("if-item");
+
+      if (!evalInContext(condition, data)) {
+        $(conditions[i]).remove();
+      }
     }
     return dom;
   };
