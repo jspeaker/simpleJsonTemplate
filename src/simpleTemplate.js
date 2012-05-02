@@ -54,6 +54,10 @@ var templateController = (function () {
     var regEx = new RegExp(pattern, "g");
     var theHtml = decodeURIComponent(element.outerHtml());
     var properties = theHtml.match(regEx);
+    if (properties == null) {
+      element = $(theHtml);
+      return element;
+    }
 
     for (var i = 0; i < properties.length; i++) {
       var propertyNameIsolator = new RegExp(/[\$\{\}]/gi);
