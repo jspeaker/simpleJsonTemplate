@@ -62,8 +62,15 @@ var templateController = (function () {
     for (var i = 0; i < properties.length; i++) {
       var propertyNameIsolator = new RegExp(/[\$\{\}]/gi);
       var propertyName = properties[i].replace(propertyNameIsolator, "").replace(itemName, "");
-      var value = data[propertyName];
-      if (value != undefined) {
+
+      var value;
+      try {
+        value = eval("data." + propertyName);
+      } catch (ex) {
+        value = null;
+      }
+
+      if (value !== undefined && value !== null) {
         var replaceRegex = new RegExp(properties[i].replace("$", "\\$").replace("{", "\\{").replace("}", "\\}"), "g");
         theHtml = theHtml.replace(replaceRegex, decodeURIComponent(value));
       }
