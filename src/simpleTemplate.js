@@ -104,7 +104,7 @@ var templateController = (function () {
       if (step === undefined)
         step = 1;
 
-      var collectionData = data[collectionName];
+      var collectionData = eval("data." +  collectionName);
 
       var pageSize = element.data("pagesize");
       if (pageSize === undefined)
