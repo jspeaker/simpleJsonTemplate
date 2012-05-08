@@ -16,15 +16,18 @@
       Name: "John Doe",
       Stuff: "Some data including some dangerous characters < > & stuff ~ ! # $ * ? ",
       Collection: [
-        { Id: 1, Stuff: "stuff 1" },
-        { Id: 2, Stuff: "stuff 2" },
-        { Id: 3, Stuff: "stuff 3" },
+        { Id: 1, Stuff: "stuff 1", InnerCollection: [
+            { Id: 123, Prop: "value 123" },
+            { Id: 234, Prop: "value 234" }
+          ]},
+        { Id: 2, Stuff: "stuff 2", InnerCollection: [] },
+        { Id: 3, Stuff: "stuff 3", InnerCollection: null },
         { Id: 4, Stuff: "stuff 4" },
         { Id: 5, Stuff: "stuff 5" },
         { Id: 6, Stuff: "stuff 6" }
       ]
     };
 
-    simpleTemplate.renderJson("templates/template-step-5.html", model, "#template-area");
+    simpleTemplate.renderJson("templates/template.html", model, "#template-area");
   </script>
 </html>

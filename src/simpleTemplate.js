@@ -104,28 +104,31 @@ var templateController = (function () {
       if (step === undefined)
         step = 1;
 
-      var collectionData = eval("data." +  collectionName);
+      var collectionData = eval("data." + collectionName);
 
-      var pageSize = element.data("pagesize");
-      if (pageSize === undefined)
-        pageSize = element.attr("pagesize");
-      if (pageSize === undefined)
-        pageSize = collectionData.length;
+      if (collectionData !== undefined) {
+        var pageSize = element.data("pagesize");
+        if (pageSize === undefined)
+          pageSize = element.attr("pagesize");
+        if (pageSize === undefined)
+          pageSize = collectionData.length;
 
-      var startIndex = (data.Page !== undefined && pageSize !== collectionData.length ? data.Page * pageSize : pageSize) - pageSize;
-      var lastIndex = pageSize < collectionData.length ? (pageSize * data.Page) - 1 : collectionData.length - 1;
-      if (lastIndex > collectionData.length - 1)
-        lastIndex = collectionData.length - 1;
+        var startIndex = (data.Page !== undefined && pageSize !== collectionData.length ? data.Page * pageSize : pageSize) - pageSize;
+        var lastIndex = pageSize < collectionData.length ? (pageSize * data.Page) - 1 : collectionData.length - 1;
+        if (lastIndex > collectionData.length - 1)
+          lastIndex = collectionData.length - 1;
 
-      for (var j = startIndex; j <= lastIndex; j = j + step) {
-        handleItemConditions(element, collectionData[j]);
-        var newElement = element.clone();
-        newElement.removeAttr("data-foreach").removeAttr("data-in").removeAttr("foreach").removeAttr("in");
-        newElement = renderProperties(propertyTypes.encoded, newElement, collectionData[j], itemName + ".");
-        element.parent().append(newElement);
+        for (var j = startIndex; j <= lastIndex; j = j + step) {
+          handleItemConditions(element, collectionData[j]);
+          var newElement = element.clone();
+          newElement.removeAttr("data-foreach").removeAttr("data-in").removeAttr("foreach").removeAttr("in");
+          newElement = renderProperties(propertyTypes.encoded, newElement, collectionData[j], itemName + ".");
+          newElement = renderCollections(newElement, collectionData[j]);
+          element.parent().append(newElement);
+        }
+        cleanupItemConditions(element.parent());
+        element.remove();
       }
-      cleanupItemConditions(element.parent());
-      element.remove();
     }
     return dom;
   };

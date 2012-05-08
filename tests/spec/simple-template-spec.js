@@ -9,9 +9,13 @@
       Name: "Name",
       Stuff: "Some encoded data & stuff ~ ! # $ * ? ",
       Collection: [
-        { Id: 1, Stuff: "stuff 1" },
-        { Id: 2, Stuff: "stuff 2" },
-        { Id: 3, Stuff: "stuff 3" },
+        { Id: 1, Stuff: "stuff 1", InnerCollection: [
+            { Id: 123, Prop: "value 123" },
+            { Id: 234, Prop: "value 234" }
+          ]
+        },
+        { Id: 2, Stuff: "stuff 2", InnerCollection: [] },
+        { Id: 3, Stuff: "stuff 3", InnerCollection: null },
         { Id: 4, Stuff: "stuff 4" },
         { Id: 5, Stuff: "stuff 5" },
         { Id: 6, Stuff: "stuff 6" }
@@ -42,14 +46,19 @@
   });
 
   it("should render the collection as li tags", function () {
-    expect(target.find("li").length).toEqual(12);
+    expect(target.find("li").length).toEqual(14);
   });
 
   it("should render the li tags with correct content", function () {
     expect($(target.find("li")[0]).html()).toEqual("Name 1 stuff 1");
     expect($(target.find("li")[1]).html()).toEqual("Name 2 stuff 2");
-    expect($.trim($(target.find("li")[6]).html())).toEqual('<span id="Span1">Collection item property conditional element</span> Name 1 stuff 1');
-    expect($.trim($(target.find("li")[7]).html())).toEqual("Name 2 stuff 2");
+    expect($.trim($(target.find("li")[6]).text())).toContain('Collection item property conditional element');
+    expect($.trim($(target.find("li")[9]).text())).toContain("Name 2 stuff 2");
+  });
+
+  it("should render the li tags for the nested collection", function() {
+    expect($.trim($(target.find("li")[7]).text())).toContain('value 123');
+    expect($.trim($(target.find("li")[8]).text())).toContain('value 234');
   });
 
   it("should render the li tags with correct ids", function () {
