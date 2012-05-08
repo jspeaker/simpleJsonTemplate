@@ -44,7 +44,7 @@ var templateController = (function () {
   var propertyTypes = {
     encoded: {
       key: "encoded",
-      pattern: "\\$(\\{|(%7B))([^\\{(%7B)])*(\\}|(%7D))",
+      pattern: "\\$(\\{)([^\\{])*(\\})",
       specifier: "$"
     }
   };
@@ -71,7 +71,7 @@ var templateController = (function () {
       }
 
       if (value !== undefined && value !== null) {
-        var replaceRegex = new RegExp(properties[i].replace("$", "\\$").replace("{", "\\{").replace("}", "\\}"), "g");
+        var replaceRegex = new RegExp(properties[i].replace("$", "\\$").replace("{", "\\{").replace("}", "\\}").replace("[", "\\[").replace("]", "\\]"), "g");
         theHtml = theHtml.replace(replaceRegex, decodeURIComponent(value));
       }
     }
