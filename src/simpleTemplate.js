@@ -119,8 +119,8 @@ var templateController = (function () {
           lastIndex = collectionData.length - 1;
 
         for (var j = startIndex; j <= lastIndex; j = j + step) {
-          handleItemConditions(element, collectionData[j]);
           var newElement = element.clone();
+          handleItemConditions(newElement, collectionData[j]);
           newElement.removeAttr("data-foreach").removeAttr("data-in").removeAttr("foreach").removeAttr("in");
           newElement = renderProperties(propertyTypes.encoded, newElement, collectionData[j], itemName + ".");
           newElement = renderCollections(newElement, collectionData[j]);
