@@ -46,6 +46,11 @@ var templateController = (function () {
       key: "encoded",
       pattern: "\\$(\\{)([^\\{])*(\\})",
       specifier: "$"
+    },
+    script: {
+      key: "script",
+      pattern: "\\!(\\{)([^\\{])*(\\})\\!",
+      specifier: "!"
     }
   };
 
@@ -70,14 +75,42 @@ var templateController = (function () {
         value = null;
       }
 
+      var replaceRegex = new RegExp(properties[i].replace("$", "\\$").replace("{", "\\{").replace("}", "\\}").replace("[", "\\[").replace("]", "\\]"), "g");
       if (value !== undefined && value !== null) {
-        var replaceRegex = new RegExp(properties[i].replace("$", "\\$").replace("{", "\\{").replace("}", "\\}").replace("[", "\\[").replace("]", "\\]"), "g");
         theHtml = theHtml.replace(replaceRegex, decodeURIComponent(value));
       }
     }
 
     element = $(theHtml);
     return element;
+  };
+
+  var renderScript = function (dom, data) {
+    var regEx = new RegExp(propertyTypes.script.pattern, "g");
+    var theHtml = dom.outerHtml();
+    var scriptCalls = theHtml.match(regEx);
+    if (scriptCalls == null) {
+      dom = $(theHtml);
+      return dom;
+    }
+
+    for (var i = 0; i < scriptCalls.length; i++) {
+      var scriptCall = scriptCalls[i].replace("!{", "").replace("}!", "");
+      var value;
+      try {
+        value = eval(scriptCall);
+      } catch (ex) {
+        value = null;
+      }
+      if (value === undefined || value === null) {
+        value = "";
+      }
+
+      theHtml = theHtml.replace(scriptCalls[i], value);
+    }
+
+    dom = $(theHtml);
+    return dom;
   };
 
   var renderEncodedProperties = function (dom, data) {
@@ -108,12 +141,18 @@ var templateController = (function () {
 
       if (collectionData !== undefined) {
         var pageSize = element.data("pagesize");
-        if (pageSize === undefined)
+        if (pageSize === undefined) {
           pageSize = element.attr("pagesize");
-        if (pageSize === undefined)
+        }
+        if (pageSize === undefined) {
           pageSize = collectionData.length;
+        }
 
-        var startIndex = (data.Page !== undefined && pageSize !== collectionData.length ? data.Page * pageSize : pageSize) - pageSize;
+        if (data.Page === undefined || data.Page === null) {
+          data.Page = 1;
+        }
+
+        var startIndex = (pageSize !== collectionData.length ? data.Page * pageSize : pageSize) - pageSize;
         var lastIndex = pageSize < collectionData.length ? (pageSize * data.Page) - 1 : collectionData.length - 1;
         if (lastIndex > collectionData.length - 1)
           lastIndex = collectionData.length - 1;
@@ -147,9 +186,11 @@ var templateController = (function () {
       if (condition === undefined)
         condition = $(conditions[i]).attr("if-item");
 
-      if (!evalInContext(condition, data)) {
-        $(conditions[i]).remove();
-      }
+      try {
+        if (!evalInContext(condition, data)) {
+          $(conditions[i]).remove();
+        }
+      } catch (ex) { }
     }
     return dom;
   };
@@ -186,7 +227,12 @@ var templateController = (function () {
     dom = renderEncodedProperties(dom, data);
     dom = renderCollections(dom, data);
 
+    dom = renderScript(dom, data);
+
     dom = $(dom.outerHtml().replace(/src_temp_disabled\=/gi, " src="));
+
+    dom = $(dom.outerHtml().replace(/\$(\{)([^\{])*(\})/gi, String.empty));
+
     return dom.outerHtml();
   };
 
