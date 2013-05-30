@@ -85,7 +85,7 @@ var templateController = (function () {
     return element;
   };
 
-  var renderScript = function (dom) {
+  var renderScript = function (dom, data) {
     var regEx = new RegExp(propertyTypes.script.pattern, "g");
     var theHtml = dom.outerHtml();
     var scriptCalls = theHtml.match(regEx);
@@ -186,11 +186,9 @@ var templateController = (function () {
       if (condition === undefined)
         condition = $(conditions[i]).attr("if-item");
 
-      try {
-        if (!evalInContext(condition, data)) {
-          $(conditions[i]).remove();
-        }
-      } catch (ex) { }
+      if (!evalInContext(condition, data)) {
+        $(conditions[i]).remove();
+      }
     }
     return dom;
   };
@@ -227,7 +225,7 @@ var templateController = (function () {
     dom = renderEncodedProperties(dom, data);
     dom = renderCollections(dom, data);
 
-    dom = renderScript(dom);
+    dom = renderScript(dom, data);
 
     dom = $(dom.outerHtml().replace(/src_temp_disabled\=/gi, " src="));
 
