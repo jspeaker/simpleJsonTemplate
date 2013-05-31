@@ -1,4 +1,10 @@
-﻿var simpleTemplate = (function () {
+﻿/* ======================================================================================
+simpleTemplate.js
+https://github.com/jspeaker/simpleJsonTemplate
+Documentation: https://github.com/jspeaker/simpleJsonTemplate/wiki
+License: https://github.com/jspeaker/simpleJsonTemplate/blob/master/license.txt
+========================================================================================= */
+var simpleTemplate = (function () {
   var renderJson = function (url, data, target, callback) {
     var template = templateCache.template(url);
     if (template != null) {
